@@ -8,7 +8,19 @@
         </div>
         <div class="profile-body">
             <div class="profile-body-container-photo">
-                <div class="profile-body-photo"></div>
+                <div
+                    class="profile-body-photo"
+                    :style="`background-image: url('${photo}')`"
+                    @mouseover="changePhotoIconActive = true"
+                    @mouseleave="changePhotoIconActive = false"
+                >
+                    <div v-show="changePhotoIconActive" class="profile-body-photo-hover">
+                        <i
+                            class='bx bxs-camera'
+                            @click="changeProfilePhoto"
+                        ></i>
+                    </div>
+                </div>
             </div>
             <div class="profile-body-form">
                 <div class="profile-body-form-input">
@@ -29,25 +41,39 @@
                 </div>
             </div>
         </div>
+        <Teleport to="#home">
+            <ChooseAPhoto v-model:active="activeChoseAPhotoEl"/>
+        </Teleport> 
     </div>
 </template>
 <script lang="ts">
 import { defineComponent } from 'vue';
+import ChooseAPhoto from './Profile/ChooseAPhoto.vue';
+import { user } from '../stores/user'; 
 
 export default defineComponent({
+    components: {
+        ChooseAPhoto,
+    },
     data() {
         return {
             activeEl: false,
+            changePhotoIconActive: false,
+            activeChoseAPhotoEl: false,
+            photo: user().photo.url
         };
     },
     methods: {
         close() {
             this.$emit('close');
         },
+        changeProfilePhoto(){
+            this.activeChoseAPhotoEl = !this.activeChoseAPhotoEl
+        }
     },
 });
 </script>
-<style scoped>
+<style scoped lang="scss">
 .profile {
     min-width: 20rem;
     max-width: 20%;
@@ -83,7 +109,23 @@ export default defineComponent({
     height: 12rem;
     border-radius: 100px;
     background-size: cover;
-    background-image: url('https://i.pinimg.com/originals/ae/24/87/ae24874dd301843548c034a3d2973658.png');
+    &-hover{
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.600);
+        border-radius: 100px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 3rem;
+        i{
+            transition: 0.1s;
+            cursor: pointer;
+            &:hover{
+                transform: scale(1.1);
+            }
+        }
+    }
 }
 .profile-body-form {
     padding: 1rem;

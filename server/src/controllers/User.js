@@ -51,7 +51,7 @@ router.post('/login', async (req, res) => {
             id: user.id,
             nickname: user.nickname,
             email: user.email,
-            photo: user.photo,
+            photo_id: user.photo_id,
             bio: user.bio,
             createdAt: user.createdAt,
             updatedAt: user.updatedAt
@@ -75,6 +75,40 @@ router.get('/', async (req, res) => {
             })
         })
         return res.status(200).json(users)
+    } catch (error) {
+        return res.status(500).json(error.message)
+    }
+})
+
+router.put('/:id', async (req, res) => {
+    try {
+        const id = req.params.id
+
+        if(!id) return res.status(400).json({message: 'É necessário informar o id do usuário que deseja atualizar'})
+
+        const connection = await db.connectToDatabase()
+        const user = await connection.execute('SELECT * FROM Users WHERE id = ? AND deletedAt IS NULL', [id]).then(data => {
+            return {
+                id: data[0][0].id,
+                nickname: data[0][0].nickname,
+                bio: data[0][0].bio,
+                photo_id: data[0][0].photo_id
+            }
+        })
+
+        
+
+        let dataToUpdate = {}
+
+        dataToUpdate.nickname = req.body.nickname || user.nickname
+        dataToUpdate.bio = req.body.bio || user.bio 
+        dataToUpdate.photo_id = req.body.photo_id || user.photo_id
+
+        await connection.execute('UPDATE users SET nickname = ?,bio = ?, photo_id = ?, updatedAt = NOW() WHERE id = ?',
+            [dataToUpdate.nickname, dataToUpdate.bio, dataToUpdate.photo_id, user.id]
+        )
+
+        return res.status(201)
     } catch (error) {
         return res.status(500).json(error.message)
     }

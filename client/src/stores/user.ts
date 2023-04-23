@@ -1,4 +1,5 @@
 import { defineStore } from "pinia";
+import axios from 'axios'
 
 export const user = defineStore("user", {
 	state: () => {
@@ -7,7 +8,15 @@ export const user = defineStore("user", {
 			email: '',
             nickname: '',
             bio: '',
-            photo: ''
+            photo: {
+                id: 0,
+                title: '',
+                url: '',
+                tiny_url: '',
+                photographer: '',
+                photographer_url: '',
+                website: '',
+            }
 		}
 	},
     actions: {
@@ -23,8 +32,24 @@ export const user = defineStore("user", {
         setBio(bio:string){
             this.bio = bio
         },
-        setPhoto(photo:string){
-            this.photo = photo
+        async setPhoto(photoId: Number){
+            try {
+                //busca o id da foto no banco de dados
+                const photo = await axios.get(`
+                    http://localhost:3000/photos/${photoId}
+                `).then(res => res.data)
+
+
+                //atualiza o id na tabela usuários
+                axios.put(`
+                    http://localhost:3000/users/${this.id}`,
+                    {photo_id: photo.id }
+                )
+                this.photo = photo
+                
+            } catch (error) {
+                console.error('ocurred an error during setting user photo. Error: ', error)
+            }
         }
     }
 })

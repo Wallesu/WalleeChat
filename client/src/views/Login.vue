@@ -147,7 +147,9 @@ export default {
                 user().setEmail(loggedUser.email)
                 user().setNickname(loggedUser.nickname)
                 if(loggedUser.bio) user().setBio(loggedUser.bio)
-                if(loggedUser.photo) user().setPhoto(loggedUser.photo)
+                if(loggedUser.photo_id){
+                    user().setPhoto(loggedUser.photo_id)
+                }
                 
 
                 this.$router.push('/')

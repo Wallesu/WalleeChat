@@ -14,15 +14,16 @@ const io = new Server(server, {
 	},
 });
 
-let messages = [];
+const schedule = require('./schedule/index.js')
+schedule.getPhotos //get photos from Pexels API at 21:00pm
+
 
 const saveMessage = require('./functions/index').saveMessage
-
+let messages = [];
 io.on('connection', (socket) => {
 	socket.on('sendMessage', (data) => {
 		messages.push(data);
 		saveMessage(data.message, data.sender.id, data.receiver.id)
-		console.log(data)
 		socket.broadcast.emit('receivedMessage', data);
 	});
 });
@@ -32,10 +33,8 @@ app.use(cors())
 app.use(express.json()) 
 app.use('/users', require('./controllers/User.js'))
 app.use('/messages', require('./controllers/Message.js'))
+app.use('/photos', require('./controllers/Photos'))
 
-app.get('/login', (req, res) => {
-	return res.send('oi');
-});
 
 server.listen(PORT, () => {
 	console.log(`-=- API is running on port ${PORT} -=-`);

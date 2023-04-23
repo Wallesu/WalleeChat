@@ -1,5 +1,5 @@
 <template>
-    <div class="home">
+    <div class="home" id="home">
         <Sidebar @selectedUser="selectedUser = $event" />
         <Chat :selectedUser="selectedUser"/>
     </div>
