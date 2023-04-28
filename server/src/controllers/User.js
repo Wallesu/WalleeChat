@@ -64,16 +64,39 @@ router.post('/login', async (req, res) => {
 router.get('/', async (req, res) => {
     try {
         const connection = await db.connectToDatabase()
-        const users = await connection.execute('SELECT * FROM Users WHERE deletedAt IS NULL').then(data => {
+        let users = await connection.execute('SELECT * FROM Users WHERE deletedAt IS NULL').then(data => {
             return data[0].map(user => {
                 return {
                     id: user.id,
                     email: user.email,
                     nickname: user.nickname,
+                    photo_id: user.photo_id,
                     createdAt: user.createdAt
                 }
             })
         })
+
+        const loadUsersPhotos = async (users) => {
+            const photosId = users.filter(user => user.photo_id).map(user => user.photo_id)
+            const usersPhotos = await connection.execute(`SELECT * FROM Photos WHERE id IN (${photosId})`).then(data => {
+                return data[0]
+            })
+
+            users = users.map(user => {
+                const userPhoto = usersPhotos.find(userPhoto => userPhoto.id === user.photo_id)
+                return {
+                    id: user.id,
+                    email: user.email,
+                    nickname: user.nickname,
+                    photo: userPhoto || null,
+                    createdAt: user.createdAt
+                }
+            })
+            return users
+        }
+
+        users = await loadUsersPhotos(users)
+        
         return res.status(200).json(users)
     } catch (error) {
         return res.status(500).json(error.message)

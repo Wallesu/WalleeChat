@@ -10,7 +10,11 @@
             ></NewConversation>
         </Transition>
         <div class="topBar">
-            <div class="topBar-photo" @click="openProfile"></div>
+            <div
+                class="topBar-photo"
+                @click="openProfile"
+                :style="`background-image: url('${userLogged?.photo?.tiny_url || 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSONNiD5SQ3jJIsWQ4Qp3m0XXpX-VUP3KZbPq_iIf9JRRoNN7OGtgSANmqcpNSSMOHaces&usqp=CAU'}')`"
+            ></div>
             <div class="topBar-options">
                 <div
                     class="topBar-options-addUser"
@@ -34,7 +38,10 @@
                 :key="index"
                 @click="selectUser(user)"
             >
-                <div class="contacts-user-photo"></div>
+                <div
+                    class="contacts-user-photo"
+                    :style="`background-image: url('${user?.photo?.tiny_url || 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSONNiD5SQ3jJIsWQ4Qp3m0XXpX-VUP3KZbPq_iIf9JRRoNN7OGtgSANmqcpNSSMOHaces&usqp=CAU'}')`"
+                ></div>
                 <div class="contacts-user-content">
                     <div class="contacts-user-content-name">
                         {{ user.nickname }}
@@ -149,6 +156,8 @@ export default defineComponent({
     height: 3rem;
     border-radius: 30px;
     cursor: pointer;
+    background-size: cover;
+    background-position: center;
 }
 .topBar-options {
     display: flex;
@@ -199,6 +208,8 @@ export default defineComponent({
     height: 3rem;
     margin: 0.5rem;
     border-radius: 50px;
+    background-size: cover;
+    background-position: center;
 }
 .contacts-user-content {
     /* background: red; */

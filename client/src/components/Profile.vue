@@ -10,7 +10,7 @@
             <div class="profile-body-container-photo">
                 <div
                     class="profile-body-photo"
-                    :style="`background-image: url('${photo}')`"
+                    :style="`background-image: url('${photo.url}')`"
                     @mouseover="changePhotoIconActive = true"
                     @mouseleave="changePhotoIconActive = false"
                 >
@@ -49,7 +49,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import ChooseAPhoto from './Profile/ChooseAPhoto.vue';
-import { user } from '../stores/user'; 
+import { user } from '../stores/user';
 
 export default defineComponent({
     components: {
@@ -59,9 +59,8 @@ export default defineComponent({
         return {
             activeEl: false,
             changePhotoIconActive: false,
-            activeChoseAPhotoEl: false,
-            photo: user().photo.url
-        };
+            activeChoseAPhotoEl: false
+        }
     },
     methods: {
         close() {
@@ -69,6 +68,11 @@ export default defineComponent({
         },
         changeProfilePhoto(){
             this.activeChoseAPhotoEl = !this.activeChoseAPhotoEl
+        }
+    },
+    computed: {
+        photo() {
+            return user().photo
         }
     },
 });
