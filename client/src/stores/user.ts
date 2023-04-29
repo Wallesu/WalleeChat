@@ -30,7 +30,12 @@ export const user = defineStore("user", {
             this.nickname = nickname
         },
         setBio(bio:string){
-            this.bio = bio
+            axios.put(`
+                http://localhost:3000/users/${this.id}`,
+                {bio: bio }
+            ).then(() => {
+                this.bio = bio
+            })        
         },
         async setPhoto(photoId: Number){
             try {

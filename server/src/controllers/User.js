@@ -131,7 +131,7 @@ router.put('/:id', async (req, res) => {
             [dataToUpdate.nickname, dataToUpdate.bio, dataToUpdate.photo_id, user.id]
         )
 
-        return res.status(201)
+        return res.status(204).end()
     } catch (error) {
         return res.status(500).json(error.message)
     }

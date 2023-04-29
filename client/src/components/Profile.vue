@@ -10,7 +10,7 @@
             <div class="profile-body-container-photo">
                 <div
                     class="profile-body-photo"
-                    :style="`background-image: url('${photo.url}')`"
+                    :style="`background-image: url('${user.photo.url}')`"
                     @mouseover="changePhotoIconActive = true"
                     @mouseleave="changePhotoIconActive = false"
                 >
@@ -25,18 +25,18 @@
             <div class="profile-body-form">
                 <div class="profile-body-form-input">
                     <div class="profile-body-form-input-label">Seu apelido</div>
-                    <div class="profile-body-form-input-value">Wall-e</div>
+                    <div class="profile-body-form-input-value">{{ user.nickname }}</div>
                 </div>
                 <div class="profile-body-form-input">
                     <div class="profile-body-form-input-label">Seu e-mail</div>
                     <div class="profile-body-form-input-value">
-                        wallysonsouza4@hotmail.com
+                        {{ user.email }}
                     </div>
                 </div>
                 <div class="profile-body-form-input">
                     <div class="profile-body-form-input-label">Recado</div>
                     <div class="profile-body-form-input-value">
-                        Bom dia flor do dia
+                        <TextArea v-model="bio" @confirm="changeBio(bio)"/>
                     </div>
                 </div>
             </div>
@@ -59,7 +59,8 @@ export default defineComponent({
         return {
             activeEl: false,
             changePhotoIconActive: false,
-            activeChoseAPhotoEl: false
+            activeChoseAPhotoEl: false,
+            bio: user().bio
         }
     },
     methods: {
@@ -68,11 +69,14 @@ export default defineComponent({
         },
         changeProfilePhoto(){
             this.activeChoseAPhotoEl = !this.activeChoseAPhotoEl
+        },
+        changeBio(bio: string){
+            this.user.setBio(bio)
         }
     },
     computed: {
-        photo() {
-            return user().photo
+        user() {
+            return user()
         }
     },
 });
@@ -145,4 +149,5 @@ export default defineComponent({
 .profile-body-form-input-value {
     color: #f8f8f8;
 }
+
 </style>
