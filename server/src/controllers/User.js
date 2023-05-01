@@ -63,16 +63,20 @@ router.post('/login', async (req, res) => {
 
 router.get('/', async (req, res) => {
     try {
+        const formatUser = (user) => {
+            return {
+                id: user.id,
+                email: user.email,
+                nickname: user.nickname,
+                bio: user.bio,
+                createdAt: user.createdAt
+            }
+        }
+
         const connection = await db.connectToDatabase()
         let users = await connection.execute('SELECT * FROM Users WHERE deletedAt IS NULL').then(data => {
             return data[0].map(user => {
-                return {
-                    id: user.id,
-                    email: user.email,
-                    nickname: user.nickname,
-                    photo_id: user.photo_id,
-                    createdAt: user.createdAt
-                }
+                return { ...formatUser(user), photo_id: user.photo_id }
             })
         })
 
@@ -84,13 +88,7 @@ router.get('/', async (req, res) => {
 
             users = users.map(user => {
                 const userPhoto = usersPhotos.find(userPhoto => userPhoto.id === user.photo_id)
-                return {
-                    id: user.id,
-                    email: user.email,
-                    nickname: user.nickname,
-                    photo: userPhoto || null,
-                    createdAt: user.createdAt
-                }
+                return { ...formatUser(user), photo: userPhoto }
             })
             return users
         }

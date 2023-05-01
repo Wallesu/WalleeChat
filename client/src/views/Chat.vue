@@ -1,5 +1,14 @@
 <template>
     <div class="chat">
+        <div class="topBar" v-if="selectedUser" @click="openFriendInformations">
+            <div
+                class="topBar-friendPhoto"
+                :style="`background-image: url('${selectedUser?.photo?.tiny_url}')`"
+            ></div>
+            <div class="topBar-friendName">
+                {{ selectedUser?.nickname }}
+            </div>
+        </div>
         <div class="messages">
             <div
                 class="message-container"
@@ -15,7 +24,7 @@
                 />
             </div>
         </div>
-        <div class="chat-bottomBar">
+        <div class="chat-bottomBar" v-if="selectedUser">
             <i class="bx bxs-cat"></i>
             <i class="bx bx-paperclip"></i>
             <MainInput
@@ -122,6 +131,9 @@ export default {
             let chat = this.$el.querySelector('.messages');
             chat.scrollTop = chat.scrollHeight - chat.clientHeight;
         },
+        openFriendInformations(){
+            this.$emit('activeRightBar', true)
+        }
     },
     computed: {
         scrollHeight() {
@@ -169,9 +181,30 @@ export default {
     justify-content: end;
     padding: 0 0 0 0;
     scroll-behavior: smooth;
+    .topBar{
+        position: fixed;
+        top: 0;
+        background: #0A0B0D;
+        color: white;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        height: 4rem;
+        &-friendPhoto{
+            background: #73a2bf;
+            width: 3rem;
+            height: 3rem;
+            margin: 0.5rem;
+            border-radius: 50px;
+            background-size: cover;
+            background-position: center;
+        }
+    }
     .messageTest {
     }
     .messages {
+        margin-top: 4rem;
         overflow-y: auto;
         .message-container {
             width: 100%;

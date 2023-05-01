@@ -93,19 +93,16 @@ export default defineComponent({
     color: #f8f8f8;
 }
 .profile-header {
-    padding: 1rem;
+    padding: 0 1rem;
     display: flex;
     align-items: center;
     background: #213140;
+    height: 4rem;
 }
 .profile-header-arrow {
     font-size: 1.4rem;
     cursor: pointer;
     padding: 0 1rem 0 0;
-}
-.profile-body {
-    /* background: blue; */
-    /* padding: ; */
 }
 .profile-body-container-photo {
     padding: 2rem 0;

@@ -61,7 +61,6 @@ export default {
 .TextInput {
     background: #91c4d9;
     width: 100%;
-    min-width: 20rem;
     height: 1rem;
     padding: 0.5rem;
     border-radius: 10px;
