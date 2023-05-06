@@ -5,7 +5,7 @@ const bcrypt = require('bcrypt')
 
 router.post('/register', async (req, res) => {
     try {
-        const connection = await db.connectToDatabase()
+        const connection = await db.connection
 
         let form = req.body
 
@@ -34,7 +34,7 @@ router.post('/register', async (req, res) => {
 
 router.post('/login', async (req, res) => {
     try {
-        const connection = await db.connectToDatabase()
+        const connection = await db.connection
         let form = req.body
 
         if(!form.email) return res.status(400).json({message: 'email required'})
@@ -73,7 +73,7 @@ router.get('/', async (req, res) => {
             }
         }
 
-        const connection = await db.connectToDatabase()
+        const connection = await db.connection
         let users = await connection.execute('SELECT * FROM Users WHERE deletedAt IS NULL').then(data => {
             return data[0].map(user => {
                 return { ...formatUser(user), photo_id: user.photo_id }
@@ -107,7 +107,7 @@ router.put('/:id', async (req, res) => {
 
         if(!id) return res.status(400).json({message: 'É necessário informar o id do usuário que deseja atualizar'})
 
-        const connection = await db.connectToDatabase()
+        const connection = await db.connection
         const user = await connection.execute('SELECT * FROM Users WHERE id = ? AND deletedAt IS NULL', [id]).then(data => {
             return {
                 id: data[0][0].id,

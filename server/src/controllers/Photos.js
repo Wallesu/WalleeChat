@@ -3,7 +3,7 @@ const db = require('../db/connection')
 
 router.get('/', async (req, res) => {
     try {
-        const connection = await db.connectToDatabase()
+        const connection = await db.connection
         
         let limit = 20
         let page = req.query.page || 0
@@ -20,7 +20,7 @@ router.get('/', async (req, res) => {
 
 router.get('/:id', async (req, res) => {
     try {
-        const connection = await db.connectToDatabase()
+        const connection = await db.connection
 
         let photo = await connection.execute('SELECT * FROM photos WHERE id = ?', [req.params.id]).then(data => data[0][0])
     

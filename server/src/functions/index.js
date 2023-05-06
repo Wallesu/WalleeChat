@@ -2,7 +2,7 @@ const router = require('express').Router()
 const db = require('../db/connection')
 
 async function saveMessage(message, sender_id, receiver_id){
-    const connection = await db.connectToDatabase()
+    const connection = await db.connection
     if(!sender_id || !receiver_id) {
         console.log('Erro ao salvar mensagem')
         return
@@ -17,7 +17,7 @@ async function saveMessage(message, sender_id, receiver_id){
 }
 
 async function getPreviousMessages(sender_id, receiver_id){
-    const connection = await db.connectToDatabase()
+    const connection = await db.connection
     if(!sender_id || !receiver_id) {
         console.log('Erro ao carregar histórico')
         return

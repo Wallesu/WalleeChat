@@ -3,7 +3,7 @@ const schedule = require('node-schedule')
 
 
 const getPhotos = schedule.scheduleJob('0 21 * * *', async function(){
-    const db = require('./db/connection')
+    const db = require('../db/connection.js')
     const axios = require('axios')
 
     try {
@@ -30,7 +30,7 @@ const getPhotos = schedule.scheduleJob('0 21 * * *', async function(){
 			queryToInsertPhotos = queryToInsertPhotos + query
 		});
 
-		const connection = await db.connectToDatabase()
+		const connection = await db.connection
 		await connection.execute(
 			`INSERT INTO photos (title, url, tiny_url, photographer, photographer_url, website)
 			VALUES ${queryToInsertPhotos}`
@@ -38,9 +38,9 @@ const getPhotos = schedule.scheduleJob('0 21 * * *', async function(){
 		.then(data => data[0])
 		.catch(error => { throw new Error(error.message) })
 
-		return res.status(201)
+		console.log('photos added')
 	} catch (error) {
-		return res.status(500).json(error.message)
+		console.log(error)
 	}
 })
 
