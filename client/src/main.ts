@@ -10,8 +10,10 @@ const app = createApp(App);
 
 import TextInput from './components/TextInput.vue'
 import TextArea from './components/global/TextArea.vue'
+import EmojiPicker from './components/global/EmojiPicker.vue'
 app.component('TextInput', TextInput)
 app.component('TextArea', TextArea)
+app.component('EmojiPicker', EmojiPicker)
 
 
 import { createPinia } from "pinia";

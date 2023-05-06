@@ -25,14 +25,24 @@
             </div>
         </div>
         <div class="chat-bottomBar" v-if="selectedUser">
-            <i class="bx bxs-cat"></i>
-            <i class="bx bx-paperclip"></i>
+            <EmojiPicker
+                @selectedEmoji="inputValue += $event.native"
+                v-model:isActive="showEmojis"
+            >
+                <template #icon>
+                    <i class="bx bxs-cat chat-bottomBar-icon"></i>
+                </template>
+            </EmojiPicker>
+            <i class="bx bx-paperclip chat-bottomBar-icon"></i>
             <MainInput
-                :modelValue="inputValue"
-                @teste="inputValue = $event"
-                @keypress.enter="sendMessage(inputValue)"
+                v-model="inputValue"
+                @keypress.enter="() => {
+                    sendMessage(inputValue)
+                    inputValue = ''
+                    showEmojis = false
+                }"
             ></MainInput>
-            <i class="bx bx-microphone"></i>
+            <i class="bx bx-microphone chat-bottomBar-icon"></i>
         </div>
     </div>
 </template>
@@ -44,27 +54,26 @@ import axios from 'axios'
 import MainInput from '../components/MainInput.vue';
 import Message from '../components/Message.vue';
 import { user } from '../stores/user';
+import EmojiPicker from '@/components/global/EmojiPicker.vue';
 
 export default {
     components: {
         MainInput,
         Message,
+        EmojiPicker,
     },
     data() {
         return {
             inputValue: '',
-            socket: null,
+            socket: io('http://localhost:3000'),
             messages: [],
-            userLogged: null,
+            userLogged: user(),
             loadingPreviousMessages: true,
+            showEmojis: false
         };
     },
 
-    mounted() {
-        this.userLogged = user();
-        this.messages = [];
-        this.socket = io('http://localhost:3000');
-        
+    mounted() {   
         this.socket.on('receivedMessage', (message) => {
             this.receiveMessage(message);
         });
@@ -89,12 +98,9 @@ export default {
             console.log('msgObj', messageObj)
             this.messages.push(messageObj);
             this.socket.emit('sendMessage', messageObj);
-            this.inputValue = '';
             setTimeout(() => {
                 this.scrollBarAtEnd();
             }, 0);
-
-            // if (isOnBottom) this.scrollBarAtEnd();
         },
         getPreviousMessages(sender_id, receiver_id) {
             this.loadingPreviousMessages = true
@@ -159,6 +165,8 @@ export default {
         },
         selectedUser(newValue) {
             if(newValue){
+                this.inputValue = ''
+                this.showEmojis = false
                 this.getPreviousMessages(this.userLogged.id, newValue.id)
             }
         },
@@ -222,15 +230,15 @@ export default {
         align-items: center;
         background: #213140;
         backdrop-filter: blur(10px);
-    }
-    &-bottomBar > i {
-        font-size: 1.7rem;
-        color: #73a2bf;
-        padding: 0 1rem;
-    }
-    &-bottomBar > i:hover {
-        color: #91c4d9;
-        cursor: pointer;
+        &-icon {
+            font-size: 1.7rem;
+            color: #73a2bf;
+            padding: 0 1rem;
+            &:hover {
+                color: #91c4d9;
+                cursor: pointer;
+            }
+        }
     }
     ::-webkit-scrollbar {
         width: 7px;
