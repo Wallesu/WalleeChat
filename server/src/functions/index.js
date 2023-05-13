@@ -1,6 +1,9 @@
 const router = require('express').Router()
 const db = require('../db/connection')
 
+/**
+ * Save message in database
+*/
 async function saveMessage(message, sender_id, receiver_id){
     const connection = await db.connection
     if(!sender_id || !receiver_id) {
@@ -68,8 +71,24 @@ async function getPreviousMessages(sender_id, receiver_id){
     return messages
 }
 
+function generateJwtToken({user, expiresIn, secret, jwtService}){
+    const token = jwtService.sign({
+            id: user.id,
+            email: user.email
+        },
+        secret,
+        {
+            algorithm: 'HS256',
+            expiresIn: expiresIn
+        }
+    )
+
+    return token
+}
+
 
 module.exports = {
     saveMessage,
-    getPreviousMessages
+    getPreviousMessages,
+    generateJwtToken
 }

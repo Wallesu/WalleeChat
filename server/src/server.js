@@ -34,6 +34,8 @@ app.use(express.json())
 app.use('/users', require('./controllers/User.js'))
 app.use('/messages', require('./controllers/Message.js'))
 app.use('/photos', require('./controllers/Photos'))
+app.use('/friends', require('./controllers/Friends'))
+app.use('/tokens', require('./controllers/Tokens'))
 
 
 server.listen(PORT, () => {

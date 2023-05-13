@@ -73,6 +73,17 @@ function createTables(connection){
 
     `
 
+    const CreateTableFriends = `
+        CREATE TABLE IF NOT EXISTS Friends (
+            id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+            user1_id INT NOT NULL,
+            CONSTRAINT FK_Users_Friends1 FOREIGN KEY (user1_id) REFERENCES Users (id),
+            user2_id INT NOT NULL,
+            CONSTRAINT FK_Users_Friends2 FOREIGN KEY (user2_id) REFERENCES Users (id),
+            status INT NOT NULL
+        );
+    `
+
     connection.query(CreateTableUsers,
         function(err, results, fields){
             if(err) console.log(err)
@@ -118,6 +129,14 @@ function createTables(connection){
         }    
     )
 
+    connection.query(CreateTableFriends,
+        function(err, results, fields){
+            if(err) console.log(err)
+            if(results){
+                console.log(results, fields)
+            }
+        }    
+    )
 
     connection.end()
 }

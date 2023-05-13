@@ -1,6 +1,7 @@
 const router = require('express').Router()
 const db = require('../db/connection')
 const bcrypt = require('bcrypt')
+const verifyAccessToken = require('../middlewares/verifyAccessToken.js')
 
 
 router.post('/register', async (req, res) => {
@@ -47,6 +48,26 @@ router.post('/login', async (req, res) => {
 
         if(!validPassword) return res.status(400).json({message: 'incorrect password'})
 
+        //generate Access Token and Refresh Token
+        
+        const { generateJwtToken } = require('../functions/index')
+        const auth = require('../config/auth')
+        const jwt = require('jsonwebtoken')
+
+        const accessToken = generateJwtToken({
+            user: user,
+            jwtService: jwt,
+            expiresIn: auth.expiresInToken,
+            secret: auth.secretToken
+        })
+
+        const refreshToken = generateJwtToken({
+            user: user,
+            jwtService: jwt,
+            expiresIn: auth.expiresInRefreshToken,
+            secret: auth.secretRefreshToken
+        })
+
         return res.status(200).json({
             id: user.id,
             nickname: user.nickname,
@@ -54,14 +75,16 @@ router.post('/login', async (req, res) => {
             photo_id: user.photo_id,
             bio: user.bio,
             createdAt: user.createdAt,
-            updatedAt: user.updatedAt
+            updatedAt: user.updatedAt,
+            accessToken: accessToken,
+            refreshToken: refreshToken
         })
     } catch (error) {
         return res.status(500).json({message: error.message})
     }
 })
 
-router.get('/', async (req, res) => {
+router.get('/', verifyAccessToken, async (req, res) => {
     try {
         const formatUser = (user) => {
             return {
@@ -79,6 +102,7 @@ router.get('/', async (req, res) => {
                 return { ...formatUser(user), photo_id: user.photo_id }
             })
         })
+        if(!users.length) return res.status(200).json([])
 
         const loadUsersPhotos = async (users) => {
             const photosId = users.filter(user => user.photo_id).map(user => user.photo_id)
