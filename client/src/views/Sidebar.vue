@@ -63,7 +63,6 @@ import Profile from '../components/Profile.vue';
 import NewConversation from '../components/NewConversation.vue';
 import { reactive, toRefs } from 'vue';
 
-import axios from 'axios'
 import { user } from '../stores/user';
 
 export default defineComponent({
@@ -106,7 +105,7 @@ export default defineComponent({
         },
         getFriends(){
             this.loadingUsers = true
-            axios.get('http://localhost:3000/users')
+            this.$axios.get('http://localhost:3000/users')
             .then((res) => {
                 type User = {
                     id?: number;

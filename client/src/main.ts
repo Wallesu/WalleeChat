@@ -8,6 +8,9 @@ import 'boxicons'
 
 const app = createApp(App);
 
+import axios from './utils/httpRequest.js'
+app.config.globalProperties.$axios = axios
+
 import TextInput from './components/TextInput.vue'
 import TextArea from './components/global/TextArea.vue'
 import EmojiPicker from './components/global/EmojiPicker.vue'

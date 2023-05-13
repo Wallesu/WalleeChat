@@ -84,6 +84,31 @@ router.post('/login', async (req, res) => {
     }
 })
 
+router.get('/me', verifyAccessToken, async (req, res) => {
+    try {
+        const userLogged = req.headers.user
+        if(!userLogged) return res.status(401).json({ message: 'No user logged' })
+
+        const connection = await db.connection
+        const userDB = await connection.execute('SELECT * FROM Users WHERE email = ? AND id = ? AND deletedAt IS NULL', [userLogged.email, userLogged.id]).then(data => data[0][0])
+        if(!userDB) return res.status(400).json({message: "user doesn't exist"})
+
+        return res.status(200).json({
+            id: userDB.id,
+            nickname: userDB.nickname,
+            email: userDB.email,
+            photo_id: userDB.photo_id,
+            bio: userDB.bio,
+            createdAt: userDB.createdAt,
+            updatedAt: userDB.updatedAt
+        })
+        
+
+    } catch (error) {
+        return res.status(500).json({ message: error.message })
+    }
+})
+
 router.get('/', verifyAccessToken, async (req, res) => {
     try {
         const formatUser = (user) => {

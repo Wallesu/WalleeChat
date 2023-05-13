@@ -117,7 +117,6 @@
 
 <script lang="ts">
 import { user } from '../stores/user';
-import axios from 'axios'
 
 export default {
     data() {
@@ -137,12 +136,16 @@ export default {
     methods: {
         login() {
             this.loginError = null
-            axios.post('http://localhost:3000/users/login', {
+            this.$axios.post('http://localhost:3000/users/login', {
                 email: this.email,
                 password: this.password
             })
             .then((res) => {
-                let loggedUser = res.data
+
+                localStorage.setItem('accessToken', res.data.accessToken)
+                localStorage.setItem('refreshToken', res.data.refreshToken)
+
+                const loggedUser = res.data
                 user().setId(loggedUser.id)
                 user().setEmail(loggedUser.email)
                 user().setNickname(loggedUser.nickname)
@@ -161,7 +164,7 @@ export default {
         },
         register() {
             this.registerError = null
-            axios.post('http://localhost:3000/users/register', {
+            this.$axios.post('http://localhost:3000/users/register', {
                 email: this.email,
                 password: this.password,
                 nickname: this.nickname
