@@ -55,6 +55,23 @@ export const user = defineStore("user", {
             } catch (error) {
                 console.error('ocurred an error during setting user photo. Error: ', error)
             }
+        },
+        logout(){
+            localStorage.removeItem('accessToken')
+            localStorage.removeItem('refreshToken')
+            this.id = 0
+            this.email = ''
+            this.nickname = ''
+            this.bio = ''
+            this.photo = {
+                id: 0,
+                title: '',
+                url: '',
+                tiny_url: '',
+                photographer: '',
+                photographer_url: '',
+                website: '',
+            }
         }
     }
 })

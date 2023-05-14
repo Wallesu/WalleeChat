@@ -41,6 +41,9 @@
                 </div>
             </div>
         </div>
+        <div class="profile-logout" @click="logout()">
+            <i class='bx bx-log-out-circle'></i> sair
+        </div>
         <Teleport to="#home">
             <ChooseAPhoto v-model:active="activeChoseAPhotoEl"/>
         </Teleport> 
@@ -72,6 +75,10 @@ export default defineComponent({
         },
         changeBio(bio: string){
             this.user.setBio(bio)
+        },
+        logout(){
+            this.user.logout()
+            this.$router.push('/login')
         }
     },
     computed: {
@@ -91,6 +98,20 @@ export default defineComponent({
     height: 100vh;
     z-index: 2;
     color: #f8f8f8;
+    &-logout{
+        color: red;
+        display: flex;
+        align-items: center;
+        position: absolute;
+        bottom: 0.5rem;
+        left: 1rem;
+        height: 2rem;
+        width: 8rem;
+        cursor: pointer;
+        i {
+            padding: 0 .5rem 0 0;
+        }
+    }
 }
 .profile-header {
     padding: 0 1rem;
