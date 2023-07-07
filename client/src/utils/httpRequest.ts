@@ -1,11 +1,11 @@
-import axios from 'axios'
+import axios, { type AxiosInstance } from 'axios'
 
 let config = {
     baseURL: 'http://localhost:3000',
     timeout: 10000
 }
 
-const instance = axios.create(config)
+const instance = axios.create(config) as AxiosInstance
 
 instance.interceptors.request.use((config) => {
     if(localStorage.getItem('accessToken')){
@@ -27,7 +27,7 @@ instance.interceptors.response.use((response) => {
             }).then(res => res.data.accessToken)
 
             if(error.config.method === 'post'){
-                return await axios[error.config.method](error.config.url, error.config.data,
+                return await axios.post(error.config.url, error.config.data,
                 {
                     headers: {
                         'Authorization': 'Bearer ' + accessToken
@@ -36,6 +36,7 @@ instance.interceptors.response.use((response) => {
                 )
             }
             else {
+                // @ts-ignore
                 return await axios[error.config.method](error.config.url,
                 {
                     headers: {
@@ -45,7 +46,7 @@ instance.interceptors.response.use((response) => {
                 )
             }
         }
-    } catch (error) {
+    } catch (error: any) {
         console.error(error.message)
     }
     return Promise.reject(error);

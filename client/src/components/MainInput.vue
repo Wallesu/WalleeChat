@@ -3,7 +3,7 @@
         <input placeholder="Mensagem" v-model="value" />
     </div>
 </template>
-<script>
+<script lang="ts">
 export default {
     name: 'TextInput',
     data() {

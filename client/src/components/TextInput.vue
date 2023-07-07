@@ -21,7 +21,7 @@
         />
     </div>
 </template>
-<script>
+<script lang="ts">
 import { reactive, toRefs } from 'vue';
 
 export default {
@@ -32,23 +32,7 @@ export default {
             value: '',
         });
         return { ...toRefs(data) };
-    },
-    mounted() {
-        console.log(this.$refs.TextInputInput.onfocus);
-    },
-    // methods: {
-    //     foco() {
-    //         console.log('deu foco aq');
-    //     },
-    //     perdeuFoco() {
-    //         console.log('perdeu foco');
-    //     },
-    // },
-    // watch: {
-    //     teste(newValue) {
-    //         console.log(newValue);
-    //     },
-    // },
+    }
 };
 </script>
 

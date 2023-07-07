@@ -65,7 +65,22 @@ import { reactive, toRefs } from 'vue';
 
 import { user } from '../stores/user';
 
-export default defineComponent({
+import type User from '../types/User'
+
+const userTemplate = {
+    id: 0,
+    nickname: '',
+    email: '',
+    photo: {
+        tiny_url: '',
+    }
+} as User
+
+type GetUserResponse = {
+    data: User[]
+}
+
+export default {
     components: {
         TextInput,
         Profile,
@@ -78,14 +93,14 @@ export default defineComponent({
         });
         return {
             loadingUsers: false,
-            users: [],
-            selectedUser: null,
-            userLogged: null,
+            users: [userTemplate],
+            selectedUser: userTemplate,
+            axios: this.$axios,
+            userLogged: user(),
             ...toRefs(data),
         };
     },
     mounted () {
-        this.userLogged = user();
         this.getFriends();
     },
     methods: {
@@ -105,16 +120,10 @@ export default defineComponent({
         },
         getFriends(){
             this.loadingUsers = true
-            this.$axios.get('http://localhost:3000/users')
-            .then((res) => {
-                type User = {
-                    id?: number;
-                    nickname?: string;
-                    email: string;
-                    createdAt?: string;
-                    updatedAt?: string;
-                    deletedAt?: string; 
-                };
+            this.axios({
+                method: 'get',
+                url: 'http://localhost:3000/users'
+            }).then((res: GetUserResponse) => {
                 let userLogged_index = res.data.findIndex((user:User) => {
                     return user.email === this.userLogged.email
                 })
@@ -122,17 +131,38 @@ export default defineComponent({
                 this.users = res.data
                 this.loadingUsers = false
             })
-            .catch(error => {
+            .catch((error: any) => {
                 console.log(error)
                 this.loadingUsers = false
             })
+            // this.$axios.get('http://localhost:3000/users')
+            // .then((res) => {
+            //     type User = {
+            //         id?: number;
+            //         nickname?: string;
+            //         email: string;
+            //         createdAt?: string;
+            //         updatedAt?: string;
+            //         deletedAt?: string; 
+            //     };
+            //     let userLogged_index = res.data.findIndex((user:User) => {
+            //         return user.email === this.userLogged.email
+            //     })
+            //     res.data.splice(userLogged_index, 1)
+            //     this.users = res.data
+            //     this.loadingUsers = false
+            // })
+            // .catch(error => {
+            //     console.log(error)
+            //     this.loadingUsers = false
+            // })
         },
-        selectUser(user:object){
+        selectUser(user:User){
             this.$emit('selectedUser', user)
             this.selectedUser = user
         }
     },
-});
+};
 </script>
 
 <style scoped lang="scss">

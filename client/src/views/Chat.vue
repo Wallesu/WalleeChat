@@ -13,12 +13,12 @@
             <div
                 class="message-container"
                 :class="{
-                    myMessage: message.sender?.email == this.userLogged?.email,
+                    myMessage: message.sender?.email == userLogged?.email,
                 }"
                 v-for="(message, index) in messages"
                 :key="index"
             >
-                <Message
+                <MessageComponent
                     :nickname="message.sender.nickname"
                     :text="message.message"
                 />
@@ -52,22 +52,47 @@ import io from 'socket.io-client';
 import axios from 'axios'
 
 import MainInput from '../components/MainInput.vue';
-import Message from '../components/Message.vue';
+import MessageComponent from '../components/Message.vue';
 import { user } from '../stores/user';
 import EmojiPicker from '@/components/global/EmojiPicker.vue';
+
+import type User from '../types/User'
+import type Photo from '../types/Photo'
+import type Message from '../types/Message'
+
+const photoTemplate = {
+    id: 0,
+    title: '',
+    url: '',
+    tiny_url: '',
+    photographer: '',
+    photographer_url: '',
+    website: '',
+} as Photo
+
+const userTemplate = {
+    id: 0,
+    nickname: '',
+    email: '',
+    photo: photoTemplate,
+} as User
 
 export default {
     components: {
         MainInput,
-        Message,
+        MessageComponent,
         EmojiPicker,
     },
     data() {
         return {
             inputValue: '',
             socket: io('http://localhost:3000'),
-            messages: [],
-            userLogged: user(),
+            messages: [{
+                sender: userTemplate,
+                receiver: userTemplate,
+                message: ''
+            }] as Message[],
+            userLogged: user() as User,
             loadingPreviousMessages: true,
             showEmojis: false
         };
@@ -81,32 +106,29 @@ export default {
     props: {
         selectedUser: {
             type: Object,
-            default: null,
+            default: userTemplate
         },
     },
     methods: {
         sendMessage(message: string) {
-            let messageObj = {
-                sender: {
-                    id: this.userLogged?.id,
-                    nickname: this.userLogged?.nickname,
-                    email: this.userLogged?.email,
-                },
-                receiver: this.selectedUser,
-                message: message,
-            };
-            console.log('msgObj', messageObj)
-            this.messages.push(messageObj);
-            this.socket.emit('sendMessage', messageObj);
-            setTimeout(() => {
-                this.scrollBarAtEnd();
-            }, 0);
-        },
-        getPreviousMessages(sender_id, receiver_id) {
-            this.loadingPreviousMessages = true
+            if(message.length){
+                const messageObj = {
+                    sender: this.userLogged as User,
+                    receiver: this.selectedUser as User,
+                    message: message as string,
+                }
 
+                this.messages.push(messageObj)
+                this.socket.emit('sendMessage', messageObj)
+                setTimeout(() => {
+                    this.scrollBarAtEnd()
+                }, 0)
+            }
+        },
+        getPreviousMessages(sender: User, receiver:User) {
+            this.loadingPreviousMessages = true
             axios.get(`
-                http://localhost:3000/messages/previous?sender_id=${sender_id}&receiver_id=${receiver_id}
+                http://localhost:3000/messages/previous?sender_id=${sender.id}&receiver_id=${receiver.id}
             `)
             .then((res) => {
                 this.messages = res.data
@@ -121,7 +143,7 @@ export default {
             })
             
         },
-        receiveMessage(message: object) {
+        receiveMessage(message: Message) {
             this.messages.push(message);
             if (this.scrollIsOnBottom()) {
                 setTimeout(() => {
@@ -151,15 +173,8 @@ export default {
         },
     },
     watch: {
-        '$el.querySelector(".messages").scrollHeight'(newValue, oldValue) {
-            let chat = this.$el.querySelector('.messages');
-            if (
-                this.scrollIsOnBottom(
-                    oldValue,
-                    chat.clientHeight,
-                    chat.scrollTop
-                )
-            ) {
+        '$el.querySelector(".messages").scrollHeight'() {
+            if (this.scrollIsOnBottom()) {
                 this.scrollBarAtEnd();
             }
         },
@@ -167,7 +182,7 @@ export default {
             if(newValue){
                 this.inputValue = ''
                 this.showEmojis = false
-                this.getPreviousMessages(this.userLogged.id, newValue.id)
+                this.getPreviousMessages(this.userLogged, newValue)
             }
         },
     },

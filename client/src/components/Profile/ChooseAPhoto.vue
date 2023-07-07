@@ -50,9 +50,9 @@
 </template>
 <script lang="ts">
 import axios from 'axios'
-const loadImage = src =>
+const loadImage = (src:string) =>
   new Promise((resolve, reject) => {
-    const img = new Image();
+    const img:HTMLImageElement = new Image();
     img.onload = () => resolve(img);
     img.onerror = reject;
     img.src = src;

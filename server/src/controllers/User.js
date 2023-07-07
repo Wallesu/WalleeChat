@@ -1,6 +1,6 @@
 const router = require('express').Router()
 const db = require('../db/connection')
-const bcrypt = require('bcrypt')
+const bcrypt = require('bcryptjs')
 const verifyAccessToken = require('../middlewares/verifyAccessToken.js')
 
 
@@ -131,6 +131,9 @@ router.get('/', verifyAccessToken, async (req, res) => {
 
         const loadUsersPhotos = async (users) => {
             const photosId = users.filter(user => user.photo_id).map(user => user.photo_id)
+            
+            if(!photosId.length) return users
+
             const usersPhotos = await connection.execute(`SELECT * FROM Photos WHERE id IN (${photosId})`).then(data => {
                 return data[0]
             })

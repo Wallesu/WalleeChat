@@ -9,7 +9,7 @@ import 'boxicons'
 const app = createApp(App);
 
 import axios from './utils/httpRequest.js'
-app.config.globalProperties.$axios = axios
+app.config.globalProperties.$axios = axios as AxiosInstance
 
 import TextInput from './components/TextInput.vue'
 import TextArea from './components/global/TextArea.vue'
@@ -20,6 +20,7 @@ app.component('EmojiPicker', EmojiPicker)
 
 
 import { createPinia } from "pinia";
+import type { AxiosInstance } from 'axios';
 app.use(createPinia());
 app.use(router);
 

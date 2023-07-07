@@ -21,6 +21,7 @@
 </template>
 <script lang="ts">
 import data from 'emoji-mart-vue-fast/data/all.json';
+// @ts-ignore
 import { Picker, EmojiIndex } from 'emoji-mart-vue-fast/src';
 const emojiData = new EmojiIndex(data);
 

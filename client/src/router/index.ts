@@ -26,7 +26,7 @@ const router = createRouter({
                     user().setPhoto(userDB.photo_id)
                 }
             
-          } catch (error) {
+          } catch (error: any) {
             console.error(error.message)
             return next('/login')
           }

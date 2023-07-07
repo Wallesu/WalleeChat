@@ -27,7 +27,7 @@ async function getPreviousMessages(sender_id, receiver_id){
     }
 
     let messages = await connection.execute(
-        `SELECT * FROM messages
+        `SELECT * FROM Messages
         WHERE (sender_id = ? AND receiver_id = ?) OR (sender_id = ? AND receiver_id = ?)
         ORDER BY createdAt`,
         [sender_id, receiver_id, receiver_id, sender_id]
@@ -36,7 +36,7 @@ async function getPreviousMessages(sender_id, receiver_id){
     .catch(error => { throw new Error(error.message) })
 
     const sender = await connection.execute(
-        `SELECT id, nickname, email FROM users
+        `SELECT id, nickname, email FROM Users
         WHERE (id = ?)`,
         [sender_id]
     )

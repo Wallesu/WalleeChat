@@ -17,7 +17,7 @@
         </div>
 </template>
 
-<script>
+<script lang="ts">
     export default {
         data() {
             return {
@@ -26,7 +26,7 @@
             }
         },
         props: ['modelValue'],
-        emits: ['update:modelValue'],
+        emits: ['update:modelValue', 'confirm'],
         watch: {
             value(newValue) {
                 this.$emit('update:modelValue', newValue)

@@ -116,6 +116,7 @@
 </template>
 
 <script lang="ts">
+import type { AxiosInstance } from 'axios';
 import { user } from '../stores/user';
 
 export default {
@@ -131,12 +132,13 @@ export default {
             fontPrimaryColor: '#000000',
             fontSecondaryColor: '#ffffff',
             signIn: true,
+            axios: this.$axios as AxiosInstance
         };
     },
     methods: {
         login() {
             this.loginError = null
-            this.$axios.post('http://localhost:3000/users/login', {
+            this.axios.post('http://localhost:3000/users/login', {
                 email: this.email,
                 password: this.password
             })
@@ -164,7 +166,7 @@ export default {
         },
         register() {
             this.registerError = null
-            this.$axios.post('http://localhost:3000/users/register', {
+            this.axios.post('http://localhost:3000/users/register', {
                 email: this.email,
                 password: this.password,
                 nickname: this.nickname

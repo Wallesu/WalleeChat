@@ -30,7 +30,14 @@ export default defineComponent({
     },
     data() {
         return {
-            selectedUser: null,
+            selectedUser: {
+                id: 0,
+                nickname: '',
+                email: '',
+                photo: {
+                    tiny_url: '',
+                }
+            },
             rightBarIsActive: false
         };
     },

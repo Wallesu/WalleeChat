@@ -10,7 +10,7 @@ router.get('/', async (req, res) => {
         
         if(typeof page !== Number) page = 0
 
-        const photo = await connection.execute(`SELECT * FROM photos ORDER BY id limit ${limit} OFFSET ${limit * page}`).then(data => data[0])
+        const photo = await connection.execute(`SELECT * FROM Photos ORDER BY id limit ${limit} OFFSET ${limit * page}`).then(data => data[0])
         
         return res.status(200).json(photo || null)
     } catch (error) {
@@ -22,7 +22,7 @@ router.get('/:id', async (req, res) => {
     try {
         const connection = await db.connection
 
-        let photo = await connection.execute('SELECT * FROM photos WHERE id = ?', [req.params.id]).then(data => data[0][0])
+        let photo = await connection.execute('SELECT * FROM Photos WHERE id = ?', [req.params.id]).then(data => data[0][0])
     
         return res.status(200).json(photo || null)
     } catch (error) {
